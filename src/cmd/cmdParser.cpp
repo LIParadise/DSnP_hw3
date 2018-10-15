@@ -228,13 +228,29 @@ CmdParser::parseCmd(string& option)
 //    ==> After printing, re-print the prompt and place the cursor back to
 //        original location
 //    --- 6.1 ---
-//    [Before] if prefix is empty, print all the file names
+//    Considering the following cases in which prefix is empty:
+//    --- 6.1.1 ---
+//    [Before] if prefix is empty, and in this directory there are multiple
+//             files and they do not have a common prefix,
 //    cmd> help $sdfgh
-//    [After]
+//    [After] print all the file names
 //    .               ..              Homework_3.docx Homework_3.pdf  Makefile
 //    MustExist.txt   MustRemove.txt  bin             dofiles         include
 //    lib             mydb            ref             src             testdb
 //    cmd> help $sdfgh
+//    --- 6.1.2 ---
+//    [Before] if prefix is empty, and in this directory there are multiple
+//             files and all of them have a common prefix,
+//    cmd> help $orld
+//    [After]
+//    ==> auto insert the common prefix and make a beep sound
+//    ==> DO NOT print the matched files
+//    cmd> help mydb-$orld
+//    --- 6.1.3 ---
+//    [Before] if prefix is empty, and only one file in the current directory
+//    cmd> help $ydb
+//    [After] print out the single file name followed by a ' '
+//    cmd> help mydb $
 //    --- 6.2 ---
 //    [Before] with a prefix and with mutiple matched files
 //    cmd> help M$Donald
