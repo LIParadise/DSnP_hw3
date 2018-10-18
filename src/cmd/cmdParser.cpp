@@ -173,16 +173,16 @@ CmdParser::parseCmd(string& option)
 
   string first_word = "";
   size_t start_pos_of_trailing = 0;
-  start_pos_of_trailing = myStrGetTok( option, first_word );
+  start_pos_of_trailing = myStrGetTok( str, first_word );
   CmdExec* ptr = getCmd( first_word );
   if( start_pos_of_trailing == string::npos ){
     option = "";
   }else{
-    option = option.substr( start_pos_of_trailing, string::npos );
+    option = str.substr( start_pos_of_trailing, string::npos );
   }
 
   if( ptr == 0 ){
-    cerr << "Illegal command!! \"\(" << first_word << "\)\"" << endl;
+    cerr << "Illegal command!! \"(" << first_word << ")\"" << endl;
     return NULL;
   }else{
     return ptr;
@@ -354,40 +354,22 @@ CmdParser::getCmd(string cmd)
   CmdExec* e = 0;
 
   string first_word = "";
-  string non_mandatory_part = "";
-  myStrGetTok( cmd, first_word );
+  string standard = "";
+  size_t start_of_non_mand = myStrGetTok( cmd, first_word );
 
   for( auto it = _cmdMap.begin();
       it != _cmdMap.end(); ++ it ){
-    if( ! ( myStrNCmp( it->first, first_word, it->first.size() ) ) ){
-      // mandatory part matches.
 
-      if( first_word.size() == it->first.size() ){
-        // matches exactly the mantory part, return it.
-        e = it->second;
-      }else{
-        // check if optional part matches
-        non_mandatory_part = first_word.substr( 
-            it->first.size(), first_word.size() );
-        if( non_mandatory_part.size() > it->second->getOptCmd().size() ){
-          // optional part not possibly match, return 0;
-          e = 0;
-          break;
-        }else if( myStrNCmp( it->second->getOptCmd(), non_mandatory_part,
-            non_mandatory_part.size() ) ){
-          // optional part not match, return 0
-          e = 0;
-          break;
-        }else{
-          // optional part good.
-          e = it->second;
-          break;
-        }
-      }
-    }// end of "if (mandatory part match)"
+    standard = it->first + it->second->getOptCmd() ;
+    if( ! myStrNCmp( standard, cmd, it->first.size() ) ){
+      // match.
+      e = it->second;
+      break;
+    }
+
   }// end of for loop;
 
-  // TODO... done 10/19 00:28
+  // TODO... done 10/19 05:01
   return e;
 }
 
