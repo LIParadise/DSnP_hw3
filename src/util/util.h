@@ -43,7 +43,7 @@ extern int listDir(vector<string>&, const string&, const string&);
   s2 being user input,
   n being mandatory part of s1;
 
-  if s2 is overall good, return true.
+  if s2 is overall good, return 0.
 
 --myStrGetTok:
   try to get the first token and store it in "tok" from "str[pos]";

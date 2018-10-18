@@ -28,16 +28,22 @@ void mybeep();
 bool
 CmdParser::openDofile(const string& dof)
 {
-  // TODO... done 10/18 21:11
+  // TODO... done 10/18 23:01
 
   if( _dofileStack.size() < MAX_FILE_DEPTH ){
-    _dofileStack.push( _dofile );
+    if( _dofile != nullptr ){
+      _dofileStack.push( _dofile );
+    }
     _dofile = new ifstream(dof.c_str());
     if( _dofile.good() ){
       return true;
     }else{
-      _dofile = _dofileStack.top();
-      _dofileStack.pop();
+      if( !_dofileStack.empty() ){
+        _dofile = _dofileStack.top();
+        _dofileStack.pop();
+      }else{
+        _dofile = nullptr;
+      }
     }
   }else{
     // _dofileStack.size() >= MAX_FILE_DEPTH;
@@ -56,6 +62,8 @@ CmdParser::closeDofile()
   if( !_dofileStack.empty() ){
     _dofile = _dofileStack.top();
     _dofileStack.pop();
+  }else{
+    _dofile = nullptr;
   }
 }
 
@@ -159,15 +167,10 @@ CmdParser::parseCmd(string& option)
   assert(!_history.empty());
   string str = _history.back();
 
-  size_t tok_end_pos = 0;
-  string _cmd_tok = "";
-  CmdRegPair::iterator _cmdMap_iterator = _cmdMap.end();
 
   // TODO... working.
   assert(str[0] != 0 && str[0] != ' ');
 
-  tok_end_pos = myStrGetTok( str, _cmd_tok );
-  _cmdMap_iterator = _cmdMap.find( _cmd_tok );
   if( _cmdMap_iterator == _cmdMap.end() ){
     // illegal cmd.
     cerr << "Illegal command!! \"\(" << _cmd_tok << "\)\"" << endl;
@@ -336,11 +339,39 @@ CmdParser::listCmd(const string& str)
 // 2. The optional part can be partially omitted.
 // 3. All string comparison are "case-insensitive".
 //
-  CmdExec*
+CmdExec*
 CmdParser::getCmd(string cmd)
 {
   CmdExec* e = 0;
-  // TODO...
+
+  string first_word = "";
+  string non_mandatory_part = "";
+  myStrGetTok( cmd, first_word );
+
+  for( CmdRegPair::iterator it = _cmdMap.begin();
+      it != _cmdMap.end(); ++ it ){
+    if( ! ( myStrNCmp( it->first, first_word, it->first.size() ) ) ){
+      // mandatory part matches.
+
+      if( first_word.size() == it->first.size() ){
+        // matches exactly the mantory part, return it.
+        e = it->second;
+      }else{
+        // check if optional part matches
+        non_mandatory_part = first_word.substr( 
+            it->first.size(), first_word.size() );
+        if( myStrNCmp( it->second.getOptCmd(), non_mandatory_part,
+            non_mandatory_part.size() ) ){
+          // optional part not match, return 0
+          e = 0;
+        }else{
+          e = it->second;
+        }
+      }
+    }// if(! myStrNCmp );
+  }// end of for loop;
+
+  // TODO... done 10/18 23:55
   return e;
 }
 
