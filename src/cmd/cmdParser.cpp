@@ -98,7 +98,7 @@ CmdParser::regCmd(const string& cmd, unsigned nCmp, CmdExec* e)
 }
 
 // Return false on "quit" or if excetion happens
-  CmdExecStatus
+CmdExecStatus
 CmdParser::execOneCmd()
 {
   bool newCmd = false;

@@ -23,7 +23,7 @@ using namespace std;
 /*****************************************/
 /*          Global Functions             */
 /*****************************************/
-  ostream&
+ostream&
 operator << (ostream& os, const DBJsonElem& j)
 {
   os << "\"" << j._key << "\" : " << j._value;
@@ -37,12 +37,92 @@ istream& operator >> (istream& is, DBJson& j)
   // - NO NEED to handle error file format
   assert(j._obj.empty());
 
+  string temp_str = "";
+  is.seekg( 0, is.beg );
+
+  while( getline( is, temp_str ) ){ // string::getline
+    if( temp_str.find_first_of( "{" ) != string::npos )
+      break;
+  }
+
+  temp_str = "";
+  string key = "";
+  string value = "";
+  int    value_data = 0;
+  bool   valid_line = true;
+  size_t start_quot_mark = 0;
+  size_t end_quot_mark   = 0;
+  size_t colon_mark      = 0;
+  size_t start_value     = 0;
+  size_t end_value       = 0;
+
+  while( getline( is, temp_str ) ){ // parsing, return fail or throw exception if bad;
+
+    valid_line = true;
+    // if (!valid_line), then this->_obj would not be modified.
+
+    if( temp_str.find_first_of( "}" ) != string::npos ){
+      break;
+    }
+
+    start_quot_mark = temp_str.find_first_of( "\"" );
+    end_quot_mark   = temp_str.find_first_of( "\"", start_quot_mark+1 );
+
+    if( start_quot_mark != string::npos && end_quot_mark != string::npos ){
+      key = temp_str.substr( start_quot_mark+1, end_quot_mark-start_quot_mark-1 );
+    }else{
+      valid_line = false;
+    }
+
+    colon_mark = temp_str.find_first_of ( ":",  end_quot_mark+1 );
+
+    if( colon_mark != string::npos ){
+      start_value = temp_str.find_first_of( "-0123456789", colon_mark+1 );
+      // maybe there's only zero as the value...
+      end_value = temp_str.find_first_not_of( "0123456789", start_value+1 );
+      if( start_value != string::npos && end_value != string::npos ){
+        // shall be normal line, with others pending, s.t. we met ',';
+        value = temp_str.substr( start_value, end_value - start_value );
+      }else if( start_value != string::npos && end_value == string::npos ){
+        end_value = temp_str.size();
+        value = temp_str.substr( start_value, end_value - start_value );
+      }else{
+        valid_line = false;
+      }
+    }else{
+      valid_line = false;
+    }
+
+    if( valid_line ){
+      if( !valid_key( key ) ){
+        return false;
+      }
+
+      try{
+        value_data = stoi( value, nullptr, 10 );
+      }catch( const invalid_argument& ia ){
+        cerr << "invalid value inside file \"" << _fileName << "\"" << endl;
+        return false;
+      }catch( const out_of_range& oor ) {
+        cerr << "value out of range inside file\"" << _fileName << "\"" << endl;
+        return false;
+      }
+
+      j.add( JsonElem( key, value_data ) );
+      keys.insert( key) ;
+    }
+  }
   return is;
 }
 
 ostream& operator << (ostream& os, const DBJson& j)
 {
-  // TODO
+  // TODO ...possibly done?
+  os << '{' << '\n';
+  for( size_t i = 0; i < j.size(); i++ ){
+    os << j[i] << '\n';
+  }
+  os << '}';
   return os;
 }
 
@@ -52,10 +132,11 @@ ostream& operator << (ostream& os, const DBJson& j)
 /*****************************************/
 /*   Member Functions for class DBJson   */
 /*****************************************/
-  void
+void
 DBJson::reset()
 {
-  // TODO
+  // TODO ...done.
+  _obj.clear();
 }
 
 // return false if key is repeated
