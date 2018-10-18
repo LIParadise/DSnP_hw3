@@ -9,6 +9,7 @@
 #include <iomanip>
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <cstdlib>
 #include <cassert>
 #include <climits>
@@ -94,22 +95,9 @@ istream& operator >> (istream& is, DBJson& j)
     }
 
     if( valid_line ){
-      if( !valid_key( key ) ){
-        return false;
+      if(myStr2Int( value, value_data )) {
+        j.add( DBJsonElem( key, value_data ) );
       }
-
-      try{
-        value_data = stoi( value, nullptr, 10 );
-      }catch( const invalid_argument& ia ){
-        cerr << "invalid value inside file \"" << _fileName << "\"" << endl;
-        return false;
-      }catch( const out_of_range& oor ) {
-        cerr << "value out of range inside file\"" << _fileName << "\"" << endl;
-        return false;
-      }
-
-      j.add( JsonElem( key, value_data ) );
-      keys.insert( key) ;
     }
   }
   return is;
@@ -145,7 +133,7 @@ DBJson::add(const DBJsonElem& elm)
 {
   // TODO ...done
   for( auto& it : this-> _obj ){
-    if( elm._key == it.key ){
+    if( elm.key() == it.key() ){
       return false;
     }
   }
@@ -176,8 +164,8 @@ DBJson::max(size_t& idx) const
     return INT_MIN;
   }else{
     for( auto& it : _obj ){
-      if( _obj.value() > maxN )
-        _obj.value = maxN;
+      if( it.value() > maxN )
+        maxN = it.value();
     }
   }
   return  maxN;
@@ -194,8 +182,8 @@ DBJson::min(size_t& idx) const
     return INT_MAX;
   }else{
     for( auto& it : _obj ){
-      if( _obj.value() < minN )
-        _obj.value = minN;
+      if( it.value() < minN )
+        minN = it.value();
     }
   }
   return  minN;
@@ -225,7 +213,7 @@ DBJson::sum() const
     return 0;
   }else{
     for( auto& it : _obj ){
-      s += it.getValue();
+      s += it.value();
     }
     return s;
   }

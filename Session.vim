@@ -49,8 +49,8 @@ badd +1 src/db/dbCmd.h
 badd +1 src/main/main.cpp
 badd +1 src/util/util.h
 badd +1 src/util/myString.cpp
-badd +229 ../DSnP_hw1/p2/p2Json.cpp
-badd +62 ../DSnP_hw1/p2/p2Json.h
+badd +120 ../DSnP_hw1/p2/p2Json.cpp
+badd +65 ../DSnP_hw1/p2/p2Json.h
 argglobal
 silent! argdel *
 argadd src/cmd/cmdParser.cpp
@@ -186,11 +186,11 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 23 - ((12 * winheight(0) + 11) / 22)
+let s:l = 37 - ((0 * winheight(0) + 11) / 22)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-23
+37
 normal! 0
 wincmd w
 argglobal
@@ -306,12 +306,12 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 155 - ((5 * winheight(0) + 11) / 22)
+let s:l = 131 - ((21 * winheight(0) + 11) / 22)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-155
-normal! 04|
+131
+normal! 0
 wincmd w
 argglobal
 edit src/cmd/cmdParser.cpp
@@ -426,12 +426,12 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 108 - ((24 * winheight(0) + 22) / 45)
+let s:l = 367 - ((18 * winheight(0) + 22) / 45)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-108
-normal! 014|
+367
+normal! 0
 wincmd w
 exe '1resize ' . ((&lines * 22 + 24) / 48)
 exe 'vert 1resize ' . ((&columns * 86 + 86) / 173)
@@ -562,11 +562,11 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 28 - ((26 * winheight(0) + 22) / 45)
+let s:l = 25 - ((23 * winheight(0) + 22) / 45)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-28
+25
 normal! 0
 wincmd w
 argglobal
@@ -815,12 +815,12 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 51 - ((25 * winheight(0) + 22) / 45)
+let s:l = 28 - ((27 * winheight(0) + 22) / 45)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-51
-normal! 0
+28
+normal! 011|
 wincmd w
 argglobal
 edit ./src/db/dbJson.cpp
@@ -935,14 +935,13 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 35 - ((22 * winheight(0) + 22) / 45)
+let s:l = 219 - ((43 * winheight(0) + 22) / 45)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-35
-normal! 06|
+219
+normal! 03|
 wincmd w
-2wincmd w
 exe 'vert 1resize ' . ((&columns * 86 + 86) / 173)
 exe 'vert 2resize ' . ((&columns * 86 + 86) / 173)
 tabedit ./src/db/dbCmd.cpp
@@ -1076,12 +1075,12 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 295 - ((44 * winheight(0) + 22) / 45)
+let s:l = 359 - ((23 * winheight(0) + 22) / 45)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-295
-normal! 0
+359
+normal! 07|
 wincmd w
 argglobal
 edit ./src/db/dbCmd.cpp
@@ -1196,12 +1195,12 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 94 - ((13 * winheight(0) + 11) / 22)
+let s:l = 1 - ((0 * winheight(0) + 11) / 22)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-94
-normal! 04|
+1
+normal! 0
 wincmd w
 argglobal
 edit src/cmd/cmdParser.cpp
@@ -1699,12 +1698,12 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 24 - ((23 * winheight(0) + 22) / 45)
+let s:l = 62 - ((39 * winheight(0) + 22) / 45)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-24
-normal! 0
+62
+normal! 017|
 tabedit src/util/myString.cpp
 set splitbelow splitright
 wincmd _ | wincmd |
@@ -1958,7 +1957,7 @@ normal! 0
 wincmd w
 exe 'vert 1resize ' . ((&columns * 86 + 86) / 173)
 exe 'vert 2resize ' . ((&columns * 86 + 86) / 173)
-tabnext 3
+tabnext 4
 set stal=1
 if exists('s:wipebuf')
   silent exe 'bwipe ' . s:wipebuf

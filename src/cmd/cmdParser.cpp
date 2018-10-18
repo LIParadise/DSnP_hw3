@@ -35,7 +35,7 @@ CmdParser::openDofile(const string& dof)
       _dofileStack.push( _dofile );
     }
     _dofile = new ifstream(dof.c_str());
-    if( _dofile.good() ){
+    if( _dofile->good() ){
       return true;
     }else{
       if( !_dofileStack.empty() ){
@@ -123,7 +123,7 @@ void
 CmdParser::printHelps() const
 {
   // TODO... done 10/18 21:17
-  for( CmdRegPair::iterator it = _cmdMap.begin(); it!= _cmdMap.end(); it++ ){
+  for( auto it = _cmdMap.begin(); it!= _cmdMap.end(); it++ ){
     it->second->help();
   }
   cout << endl;
@@ -357,7 +357,7 @@ CmdParser::getCmd(string cmd)
   string non_mandatory_part = "";
   myStrGetTok( cmd, first_word );
 
-  for( CmdRegPair::iterator it = _cmdMap.begin();
+  for( auto it = _cmdMap.begin();
       it != _cmdMap.end(); ++ it ){
     if( ! ( myStrNCmp( it->first, first_word, it->first.size() ) ) ){
       // mandatory part matches.
@@ -369,11 +369,11 @@ CmdParser::getCmd(string cmd)
         // check if optional part matches
         non_mandatory_part = first_word.substr( 
             it->first.size(), first_word.size() );
-        if( non_mandatory_part.size() > it->second.getOptCmd.size() ){
+        if( non_mandatory_part.size() > it->second->getOptCmd().size() ){
           // optional part not possibly match, return 0;
           e = 0;
           break;
-        }else if( myStrNCmp( it->second.getOptCmd(), non_mandatory_part,
+        }else if( myStrNCmp( it->second->getOptCmd(), non_mandatory_part,
             non_mandatory_part.size() ) ){
           // optional part not match, return 0
           e = 0;
