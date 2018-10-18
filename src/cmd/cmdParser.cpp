@@ -168,16 +168,25 @@ CmdParser::parseCmd(string& option)
   string str = _history.back();
 
 
-  // TODO... working.
+  // TODO... done 10/19 00:48;
   assert(str[0] != 0 && str[0] != ' ');
 
-  if( _cmdMap_iterator == _cmdMap.end() ){
-    // illegal cmd.
-    cerr << "Illegal command!! \"\(" << _cmd_tok << "\)\"" << endl;
+  string first_word = "";
+  size_t start_pos_of_trailing = 0;
+  start_pos_of_trailing = myStrGetTok( option, first_word );
+  CmdExec* ptr = getCmd( first_word );
+  if( start_pos_of_trailing == string::npos ){
+    option = "";
+  }else{
+    option = option.substr( start_pos_of_trailing, string::npos );
   }
 
-
-  return NULL;
+  if( ptr == 0 ){
+    cerr << "Illegal command!! \"\(" << first_word << "\)\"" << endl;
+    return NULL;
+  }else{
+    return ptr;
+  }
 }
 
 // Remove this function for TODO...
@@ -322,7 +331,7 @@ CmdParser::parseCmd(string& option)
 //    [After Tab]
 //    ==> Beep and stay in the same location
 
-  void
+void
 CmdParser::listCmd(const string& str)
 {
   // TODO...
@@ -360,18 +369,25 @@ CmdParser::getCmd(string cmd)
         // check if optional part matches
         non_mandatory_part = first_word.substr( 
             it->first.size(), first_word.size() );
-        if( myStrNCmp( it->second.getOptCmd(), non_mandatory_part,
+        if( non_mandatory_part.size() > it->second.getOptCmd.size() ){
+          // optional part not possibly match, return 0;
+          e = 0;
+          break;
+        }else if( myStrNCmp( it->second.getOptCmd(), non_mandatory_part,
             non_mandatory_part.size() ) ){
           // optional part not match, return 0
           e = 0;
+          break;
         }else{
+          // optional part good.
           e = it->second;
+          break;
         }
       }
-    }// if(! myStrNCmp );
+    }// end of "if (mandatory part match)"
   }// end of for loop;
 
-  // TODO... done 10/18 23:55
+  // TODO... done 10/19 00:28
   return e;
 }
 
@@ -463,13 +479,4 @@ CmdExec::errorOption(CmdOptionError err, const string& opt) const
       exit(-1);
   }
   return CMD_EXEC_ERROR;
-}
-
-bool CmdParser::myIsValidVarName( const string & str ){
-   size_t n = str.size();
-   if (n == 0) return false;
-   for (size_t i = 0; i < n; ++i)
-      if (!isalnum(str[i]) && str[i] != '_')
-         return false;
-   return true;
 }

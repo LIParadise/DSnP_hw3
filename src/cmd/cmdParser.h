@@ -152,7 +152,6 @@ private:
    void moveToHistory(int index);
    bool addHistory();
    void retrieveHistory();
-   bool myIsValidVarName();
    #ifdef TA_KB_SETTING
    void taTestOnly() {}
    #endif

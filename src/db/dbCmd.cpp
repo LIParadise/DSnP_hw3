@@ -43,8 +43,22 @@ initDbCmd()
 CmdExecStatus
 DBAppendCmd::exec(const string& option)
 {
-   // TODO...
+   // TODO... working...
    // check option
+  vector<string> options;
+  options.clear();
+
+  if( lexOptions( option, options, 2 ) ){
+    // good # of options.
+    if( ! isValidVarName( options[0] ) ){
+      return errorOption( CMD_OPT_ILLEGAL, options[0] );
+    }
+    if( ! myStr2Int( options[1] ) ){
+      return errorOption( CMD_OPT_ILLEGAL, options[1] );
+    }
+  }else{
+    return CMD_EXEC_ERROR;
+  }
 
    return CMD_EXEC_DONE;
 }
