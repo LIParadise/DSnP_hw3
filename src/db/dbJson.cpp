@@ -218,3 +218,15 @@ DBJson::sum() const
     return s;
   }
 }
+
+bool
+DBJson::find_key( size_t & idx, const string& str ){
+  idx = 0;
+  for( size_t i = 0; i < _obj.size(); i++ ){
+    if( _obj[i].key() == str ){
+      idx = i;
+      return true;
+    }
+  }
+  return false;
+}

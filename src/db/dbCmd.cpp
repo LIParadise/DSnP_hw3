@@ -228,10 +228,32 @@ DBMinCmd::help() const
 //----------------------------------------------------------------------
 //    DBPrint [(string key)]
 //----------------------------------------------------------------------
-  CmdExecStatus
+CmdExecStatus
 DBPrintCmd::exec(const string& option)
 {  
-  // TODO...
+  // TODO... shall be done; 10/19 05:45
+
+  string my_key = "";
+  size_t key_idx = 0;
+
+  myStrGetTok( option, my_key );
+  if( my_key == "" ){
+    cout << dbjson << endl;
+    return CMD_EXEC_DONE;
+  }
+
+  // option is not empty.
+  if( !( lexSingleOption( option, my_key, true ) ) ){
+    // something wrong in "string& option";
+    return CMD_EXEC_ERROR;
+  }else{
+    if( dbjson.find_key( key_idx, my_key ) ){
+      cout << "{ " << dbjson[key_idx] << " }" << endl;
+    }else{
+      cerr << "Error: No JSON element with key \"" << my_key << "\" is found.";
+      cerr << endl;
+    }
+  }
 
   return CMD_EXEC_DONE;
 }

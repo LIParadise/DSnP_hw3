@@ -49,6 +49,8 @@ public:
    void sort(const DBSortValue&);
    int sum() const;
 
+   bool find_key( size_t&, const string& );
+
    // Basic access functions
    void reset();
    size_t size() const { return _obj.size(); }
