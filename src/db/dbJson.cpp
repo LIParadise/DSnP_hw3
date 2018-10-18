@@ -27,7 +27,7 @@ using namespace std;
 ostream&
 operator << (ostream& os, const DBJsonElem& j)
 {
-  os << "\"" << j._key << "\" : " << j._value;
+  os << "\"" << j.key() << "\" : " << j.value();
   return os;
 }
 
@@ -107,8 +107,14 @@ ostream& operator << (ostream& os, const DBJson& j)
 {
   // TODO ...possibly done?
   os << '{' << '\n';
-  for( size_t i = 0; i < j.size(); i++ ){
-    os << j[i] << '\n';
+  if( j.size() ){
+    for( size_t i = 0; i < j.size()-1; i++ ){
+      os << "  " << j[i] ;
+      if( i < j.size()-1 ){
+        os << " ,";
+      }
+      os << '\n';
+    }
   }
   os << '}';
   return os;

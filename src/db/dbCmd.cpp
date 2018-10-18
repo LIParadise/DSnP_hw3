@@ -239,6 +239,7 @@ DBPrintCmd::exec(const string& option)
   myStrGetTok( option, my_key );
   if( my_key == "" ){
     cout << dbjson << endl;
+    cout << "Total JSON elements: " << dbjson.size() << endl;
     return CMD_EXEC_DONE;
   }
 

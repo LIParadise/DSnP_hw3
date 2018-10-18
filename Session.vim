@@ -815,11 +815,11 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 28 - ((27 * winheight(0) + 22) / 45)
+let s:l = 33 - ((32 * winheight(0) + 22) / 45)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-28
+33
 normal! 0
 wincmd w
 argglobal
@@ -935,14 +935,13 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 226 - ((38 * winheight(0) + 22) / 45)
+let s:l = 118 - ((34 * winheight(0) + 22) / 45)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-226
-normal! 015|
+118
+normal! 03|
 wincmd w
-2wincmd w
 exe 'vert 1resize ' . ((&columns * 86 + 86) / 173)
 exe 'vert 2resize ' . ((&columns * 86 + 86) / 173)
 tabedit src/cmd/cmdParser.h
@@ -1076,11 +1075,11 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 180 - ((1 * winheight(0) + 11) / 22)
+let s:l = 183 - ((4 * winheight(0) + 11) / 22)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-180
+183
 normal! 0
 wincmd w
 argglobal
@@ -1316,13 +1315,14 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 251 - ((23 * winheight(0) + 22) / 45)
+let s:l = 242 - ((19 * winheight(0) + 22) / 45)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-251
-normal! 07|
+242
+normal! 061|
 wincmd w
+3wincmd w
 exe '1resize ' . ((&lines * 22 + 24) / 48)
 exe 'vert 1resize ' . ((&columns * 86 + 86) / 173)
 exe '2resize ' . ((&lines * 22 + 24) / 48)
@@ -1958,7 +1958,7 @@ normal! 0
 wincmd w
 exe 'vert 1resize ' . ((&columns * 86 + 86) / 173)
 exe 'vert 2resize ' . ((&columns * 86 + 86) / 173)
-tabnext 3
+tabnext 4
 set stal=1
 if exists('s:wipebuf')
   silent exe 'bwipe ' . s:wipebuf
