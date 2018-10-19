@@ -37,6 +37,7 @@ istream& operator >> (istream& is, DBJson& j)
   // - You can assume the input file is with correct JSON file format
   // - NO NEED to handle error file format
   assert(j._obj.empty());
+  j._ifFile = true;
 
   string temp_str = "";
   is.seekg( 0, is.beg );
@@ -126,16 +127,16 @@ ostream& operator << (ostream& os, const DBJson& j)
 /*****************************************/
 /*   Member Functions for class DBJson   */
 /*****************************************/
-void
+  void
 DBJson::reset()
 {
   // TODO ...done.
   _obj.clear();
-  assert( _obj.empty() && "well what could I say?" );
+  _ifFile = false;
 }
 
 // return false if key is repeated
-bool
+  bool
 DBJson::add(const DBJsonElem& elm)
 {
   // TODO ...done
@@ -192,14 +193,14 @@ DBJson::min(size_t& idx) const
   return minN;
 }
 
-void
+  void
 DBJson::sort(const DBSortKey& s)
 {
   // Sort the data according to the order of columns in 's'
   ::sort(_obj.begin(), _obj.end(), s);
 }
 
-void
+  void
 DBJson::sort(const DBSortValue& s)
 {
   // Sort the data according to the order of columns in 's'
@@ -223,7 +224,7 @@ DBJson::sum() const
 }
 
 bool
-DBJson::find_key( size_t & idx, const string& str ){
+DBJson::find_key( size_t & idx, const string& str ) const{
   idx = 0;
   for( size_t i = 0; i < _obj.size(); i++ ){
     if( _obj[i].key() == str ){
