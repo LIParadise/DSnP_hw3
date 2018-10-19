@@ -40,7 +40,7 @@ initDbCmd()
 //----------------------------------------------------------------------
 //    DBAPpend <(string key)><(int value)>
 //----------------------------------------------------------------------
-  CmdExecStatus
+CmdExecStatus
 DBAppendCmd::exec(const string& option)
 {
   // TODO... done 10/19 03:06
@@ -158,7 +158,7 @@ DBCountCmd::help() const
 //----------------------------------------------------------------------
 //    DBMAx
 //----------------------------------------------------------------------
-  CmdExecStatus
+CmdExecStatus
 DBMaxCmd::exec(const string& option)
 {  
   // check option

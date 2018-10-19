@@ -107,8 +107,8 @@ ostream& operator << (ostream& os, const DBJson& j)
 {
   // TODO ...possibly done?
   os << '{' << '\n';
-  if( j.size() ){
-    for( size_t i = 0; i < j.size()-1; i++ ){
+  if( !(j.empty()) ){
+    for( size_t i = 0; i < j.size(); i++ ){
       os << "  " << j[i] ;
       if( i < j.size()-1 ){
         os << " ,";
@@ -165,13 +165,11 @@ DBJson::max(size_t& idx) const
 {
   // TODO ...done;
   int maxN = INT_MIN;
-  if( _obj.size() == 0 ){
-    idx = 0;
-    return INT_MIN;
-  }else{
-    for( auto& it : _obj ){
-      if( it.value() > maxN )
-        maxN = it.value();
+  idx = 0;
+  for( size_t i = 0; i < _obj.size(); i++ ){
+    if( _obj[i].value() > maxN ){
+      maxN = _obj[i].value();
+      idx = i;
     }
   }
   return  maxN;
@@ -183,16 +181,14 @@ DBJson::min(size_t& idx) const
 {
   // TODO ...done
   int minN = INT_MAX;
-  if( _obj.size() == 0 ){
-    idx = 0;
-    return INT_MAX;
-  }else{
-    for( auto& it : _obj ){
-      if( it.value() < minN )
-        minN = it.value();
+  idx = 0;
+  for( size_t i = 0; i < _obj.size(); i++ ){
+    if( _obj[i].value() < minN ){
+      minN = _obj[i].value();
+      idx = i;
     }
   }
-  return  minN;
+  return minN;
 }
 
 void
