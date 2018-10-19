@@ -39,7 +39,7 @@ extern int listDir(vector<string>&, const string&, const string&);
   only files that have its name starting with prefix would be in the vector.
 
 --myStrNCmp:
-  s1 is the formal command name given in document,
+  s1 is the full formal command name given in document,
   s2 being user input,
   n being mandatory part of s1;
 

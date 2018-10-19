@@ -276,7 +276,7 @@ DBPrintCmd::help() const
 //----------------------------------------------------------------------
 //    DBRead <(string jsonFile)> [-Replace]
 //----------------------------------------------------------------------
-  CmdExecStatus
+CmdExecStatus
 DBReadCmd::exec(const string& option)
 {
   // check option
