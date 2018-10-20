@@ -10,6 +10,7 @@
 #include <iomanip>
 #include <cstdlib>
 #include <cctype>      // toupper;
+#include <limits>      // numeric_limits<size_t>::max();
 #include "util.h"
 #include "cmdParser.h"
 
@@ -340,11 +341,12 @@ CmdParser::listCmd(const string& str)
   // along with # of tokens in current command line.
 
   string temp = "";
-  _tabPressCount = 1;
+  size_t index = 0;
 
   // case I. there's no token.
   if( myStrGetTok( str, temp ) == string::npos && temp == "" ){
     printHelps();
+    _tabPressCount = 1;
     return;
   }
   // End of case I.
@@ -352,11 +354,9 @@ CmdParser::listCmd(const string& str)
   // case II. there's only one token.
   temp = "";
   if( myStrGetTok( str, temp ) == string::npos && temp != "" ){
-    // if token could not match any of registered command,
-    // beep and do nothing.
-
     temp_cmd_pairs.clear();
     string standard = "";
+    
     for( auto it = _cmdMap.begin(); it != _cmdMap.end(); ++it ){
       standard = "";
       standard = it->first + it->second->getOptCmd();
@@ -367,15 +367,16 @@ CmdParser::listCmd(const string& str)
     }
 
     if( temp_cmd_pairs.empty() ){
-      // token is bad.
+      // token could not match any of registered command,
+      // beep and do nothing.
       mybeep();
-      return;
-    }
-
-    if( temp_cmd_pairs.size() == 1 ){
+      _tabPressCount = 1;
+    }else if( temp_cmd_pairs.size() == 1 ){
       // token is good, and only one match.
       standard = "";
-      standard = temp_cmd_pairs.at(0).first + temp_cmd_pairs.second->getOptCmd();
+      standard = temp_cmd_pairs.at(0).first + 
+        temp_cmd_pairs.at(0).second->getOptCmd();
+      assert( temp.size() <= standard.size() );
       for( size_t i = temp.size() ; i < standard.size() ; ++i ){
         insertChar( standard[i] );
       }
@@ -393,8 +394,68 @@ CmdParser::listCmd(const string& str)
         cout << setw(12) << left << standard;
       }
       cout.flags(origFlags);
+      _tabPressCount = 1;
     }
+    return;
   }// end of case II.
+
+  // case III, there's at least one token and a tailing space.
+  // maybe first token correspond to an exact command, maybe not.
+  // maybe first token matches full name of that command, maybe not.
+  temp = "";
+  index = myStrGetTok( str, temp );
+  if( index != string::npos ){
+    temp_cmd_pairs.clear();
+    string neighbor_tok = "";
+    string standard = "";
+    string _prefix = "";
+    index = myStrGetTok( str, neighbor_tok, index );
+    vector<string> filenames;
+    
+    for( auto it = _cmdMap.begin(); it != _cmdMap.end(); ++it ){
+      standard = "";
+      standard = it->first + it->second->getOptCmd();
+      if( cmp_str_ign_case( standard, temp, temp.size() ) ){
+        // match cmd;
+        temp_cmd_pairs.push_back( (*it) );
+      }
+    }
+
+    if( temp_cmd_pairs.empty() ){
+      // leading token doesn't mean any command;
+      mybeep();
+      _tabPressCount = 1;
+      return;
+    }else if( temp_cmd_pairs.size() == 1 ){
+      // there's only one command like this;
+      if( _tabPressCount == 1 ){
+        temp_cmd_pairs[0].second->help();
+        _tabPressCount = 2;
+        return;
+      }else if( _tabPressCount == 0 ){
+        assert(0 && "_tabPressCount exception in listCmd, with #token >= 1" );
+      }else{
+        // _tabPressCount > 1;
+        if( neighbor_tok == "" ){
+          // command line like "cmd> user_input $" and pressed tab again,
+          // where '$' means cursor.
+          // there shall be help message of this command printed before.
+          // try ls or show common prefix.
+          listDir( filenames, "" );
+          longest_prefix( filenames, _prefix );
+          if( filenames.empty() ){
+            mybeep();
+            _tabPressCount = 2;
+            return;
+          }else{
+            longest_prefix( filenames, _prefix );
+
+        }
+      }
+    }
+  }
+    
+
 }
 
 // cmd is a copy of the original input
@@ -525,7 +586,7 @@ CmdExec::errorOption(CmdOptionError err, const string& opt) const
 
 bool
 CmdParser::cmp_str_ign_case( const string& standard, const string& user_input,
-    const size_t size ){
+    const size_t size ) const {
   assert( size <= user_input.size() &&
       size <= standard.size() );
   char ch1, ch2;
@@ -540,3 +601,19 @@ CmdParser::cmp_str_ign_case( const string& standard, const string& user_input,
   }
   return true;
 }
+
+void longest_prefix( const vector<string>& filenames, string& _prefix ){
+  _prefix = "";
+  assert( ! filenames.empty() );
+  string temp = "";
+  string former = "";
+  string latter = "";
+  size_t len = numeric_limits<size_t>::max();
+  size_t offset = 0;
+  for( size_t i = 0; i < filenames.size(); i++ ){
+    if( filenames[i].size() < len ){
+      len = filenames[i].size();
+    }
+  }
+  
+

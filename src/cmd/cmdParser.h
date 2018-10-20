@@ -183,6 +183,7 @@ class CmdParser
 
   // helper user-defined functions;
   bool cmp_str_ign_case( const string&, const string&, const size_t ) const;
+  void longest_prefix( const vector<string>&, string& ) const;
 };
 
 
