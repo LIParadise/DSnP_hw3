@@ -177,6 +177,12 @@ class CmdParser
   // Reset to false when new command added
   CmdMap    _cmdMap;                // map from string to command
   stack<ifstream*> _dofileStack;    // For recursive dofile calling
+
+  // helper user-defined data members;
+  vector<CmdRegPair> temp_cmd_pairs;
+
+  // helper user-defined functions;
+  bool cmp_str_ign_case( const string&, const string&, const size_t ) const;
 };
 
 

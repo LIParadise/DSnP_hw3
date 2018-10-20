@@ -9,6 +9,7 @@
 #include <iostream>
 #include <iomanip>
 #include <cstdlib>
+#include <cctype>      // toupper;
 #include "util.h"
 #include "cmdParser.h"
 
@@ -25,7 +26,7 @@ void mybeep();
 //----------------------------------------------------------------------
 // return false if file cannot be opened
 // Please refer to the comments in "DofileCmd::exec", cmdCommon.cpp
-bool
+  bool
 CmdParser::openDofile(const string& dof)
 {
   // TODO... done 10/18 23:01
@@ -52,7 +53,7 @@ CmdParser::openDofile(const string& dof)
 }
 
 // Must make sure _dofile != 0
-void
+  void
 CmdParser::closeDofile()
 {
   assert(_dofile != 0);
@@ -98,7 +99,7 @@ CmdParser::regCmd(const string& cmd, unsigned nCmp, CmdExec* e)
 }
 
 // Return false on "quit" or if excetion happens
-CmdExecStatus
+  CmdExecStatus
 CmdParser::execOneCmd()
 {
   bool newCmd = false;
@@ -160,7 +161,7 @@ CmdParser::printHistory(int nPrint) const
 // 3. Get the command options from the trailing part of str (i.e. second
 //    words and beyond) and store them in "option"
 //
-CmdExec*
+  CmdExec*
 CmdParser::parseCmd(string& option)
 {
   assert(_tempCmdStored == false);
@@ -193,7 +194,7 @@ CmdParser::parseCmd(string& option)
 //
 // This function is called by pressing 'Tab'.
 // It is to list the partially matched commands.
-// "str" is the partial string before current cursor position. It can be 
+// "str" is THE PARTIAL STRING BEFORE CURRENT CURSOR POSITION. It can be 
 // a null string, or begin with ' '. The beginning ' ' will be ignored.
 //
 // Several possibilities after pressing 'Tab'
@@ -331,10 +332,69 @@ CmdParser::parseCmd(string& option)
 //    [After Tab]
 //    ==> Beep and stay in the same location
 
-void
+  void
 CmdParser::listCmd(const string& str)
 {
   // TODO...
+  // we'll do this function based on cmdMgr->_tabPressCount
+  // along with # of tokens in current command line.
+
+  string temp = "";
+  _tabPressCount = 1;
+
+  // case I. there's no token.
+  if( myStrGetTok( str, temp ) == string::npos && temp == "" ){
+    printHelps();
+    return;
+  }
+  // End of case I.
+
+  // case II. there's only one token.
+  temp = "";
+  if( myStrGetTok( str, temp ) == string::npos && temp != "" ){
+    // if token could not match any of registered command,
+    // beep and do nothing.
+
+    temp_cmd_pairs.clear();
+    string standard = "";
+    for( auto it = _cmdMap.begin(); it != _cmdMap.end(); ++it ){
+      standard = "";
+      standard = it->first + it->second->getOptCmd();
+      if( cmp_str_ign_case( standard, temp, temp.size() ) ){
+        // match cmd;
+        temp_cmd_pairs.push_back( (*it) );
+      }
+    }
+
+    if( temp_cmd_pairs.empty() ){
+      // token is bad.
+      mybeep();
+      return;
+    }
+
+    if( temp_cmd_pairs.size() == 1 ){
+      // token is good, and only one match.
+      standard = "";
+      standard = temp_cmd_pairs.at(0).first + temp_cmd_pairs.second->getOptCmd();
+      for( size_t i = temp.size() ; i < standard.size() ; ++i ){
+        insertChar( standard[i] );
+      }
+      insertChar( ' ' );
+      _tabPressCount = 0;
+    }else{
+      // temp_cmd_pairs.size() > 1;
+      ios_base::fmtflags origFlags = cout.flags();
+      standard = "";
+      for ( size_t i = 0; i < temp_cmd_pairs.size(); ++i) {
+        if( i%5 == 0 ){
+          cout << endl;
+        }
+        standard = temp_cmd_pairs[i].first+temp_cmd_pairs[i].second->getOptCmd();
+        cout << setw(12) << left << standard;
+      }
+      cout.flags(origFlags);
+    }
+  }// end of case II.
 }
 
 // cmd is a copy of the original input
@@ -348,7 +408,7 @@ CmdParser::listCmd(const string& str)
 // 2. The optional part can be partially omitted.
 // 3. All string comparison are "case-insensitive".
 //
-CmdExec*
+  CmdExec*
 CmdParser::getCmd(string cmd)
 {
   CmdExec* e = 0;
@@ -461,4 +521,22 @@ CmdExec::errorOption(CmdOptionError err, const string& opt) const
       exit(-1);
   }
   return CMD_EXEC_ERROR;
+}
+
+bool
+CmdParser::cmp_str_ign_case( const string& standard, const string& user_input,
+    const size_t size ){
+  assert( size <= user_input.size() &&
+      size <= standard.size() );
+  char ch1, ch2;
+  for( size_t i = 0; i < size; i ++ ){
+    ch1 = standard[i];
+    ch2 = user_input[i];
+    ch1 = toupper( ch1 );
+    ch2 = toupper( ch2 );
+    if( ch1 != ch2 ){
+      return false;
+    }
+  }
+  return true;
 }

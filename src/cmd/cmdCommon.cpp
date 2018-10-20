@@ -4,7 +4,7 @@
   Synopsis     [ Define common commands ]
   Author       [ Chung-Yang (Ric) Huang ]
   Copyright    [ Copyleft(c) 2007-present LaDs(III), GIEE, NTU, Taiwan ]
-****************************************************************************/
+ ****************************************************************************/
 #include <iomanip>
 #include <string>
 #include "util.h"
@@ -12,129 +12,129 @@
 
 using namespace std;
 
-bool
+  bool
 initCommonCmd()
 {
-   if (!(cmdMgr->regCmd("Quit", 1, new QuitCmd) &&
-         cmdMgr->regCmd("HIStory", 3, new HistoryCmd) &&
-         cmdMgr->regCmd("HELp", 3, new HelpCmd) &&
-         cmdMgr->regCmd("DOfile", 2, new DofileCmd)
-      )) {
-      cerr << "Registering \"init\" commands fails... exiting" << endl;
-      return false;
-   }
-   return true;
+  if (!(cmdMgr->regCmd("Quit", 1, new QuitCmd) &&
+        cmdMgr->regCmd("HIStory", 3, new HistoryCmd) &&
+        cmdMgr->regCmd("HELp", 3, new HelpCmd) &&
+        cmdMgr->regCmd("DOfile", 2, new DofileCmd)
+       )) {
+    cerr << "Registering \"init\" commands fails... exiting" << endl;
+    return false;
+  }
+  return true;
 }
 
 
 //----------------------------------------------------------------------
 //    HELp [(string cmd)]
 //----------------------------------------------------------------------
-CmdExecStatus
+  CmdExecStatus
 HelpCmd::exec(const string& option)
 {
-   // check option
-   string token;
-   if (!CmdExec::lexSingleOption(option, token))
-      return CMD_EXEC_ERROR;
-   if (token.size()) {
-      CmdExec* e = cmdMgr->getCmd(token);
-      if (!e) return CmdExec::errorOption(CMD_OPT_ILLEGAL, token);
-      e->usage(cout);
-   }
-   else
-      cmdMgr->printHelps();
-   return CMD_EXEC_DONE;
+  // check option
+  string token;
+  if (!CmdExec::lexSingleOption(option, token))
+    return CMD_EXEC_ERROR;
+  if (token.size()) {
+    CmdExec* e = cmdMgr->getCmd(token);
+    if (!e) return CmdExec::errorOption(CMD_OPT_ILLEGAL, token);
+    e->usage(cout);
+  }
+  else
+    cmdMgr->printHelps();
+  return CMD_EXEC_DONE;
 }
 
 void
 HelpCmd::usage(ostream& os) const
 {
-   os << "Usage: HELp [(string cmd)]" << endl;
+  os << "Usage: HELp [(string cmd)]" << endl;
 }
 
 void
 HelpCmd::help() const
 {
-   cout << setw(15) << left << "HELp: "
-        << "print this help message" << endl;
+  cout << setw(15) << left << "HELp: "
+    << "print this help message" << endl;
 }
 
 //----------------------------------------------------------------------
 //    Quit [-Force]
 //----------------------------------------------------------------------
-CmdExecStatus
+  CmdExecStatus
 QuitCmd::exec(const string& option)
 {
-   // check option
-   string token;
-   if (!CmdExec::lexSingleOption(option, token))
-      return CMD_EXEC_ERROR;
-   if (token.size()) {
-      if (myStrNCmp("-Forced", token, 2) != 0)
-         return CmdExec::errorOption(CMD_OPT_ILLEGAL, token);
-      else
-         return CMD_EXEC_QUIT;  // ready to quit
-   }
+  // check option
+  string token;
+  if (!CmdExec::lexSingleOption(option, token))
+    return CMD_EXEC_ERROR;
+  if (token.size()) {
+    if (myStrNCmp("-Forced", token, 2) != 0)
+      return CmdExec::errorOption(CMD_OPT_ILLEGAL, token);
+    else
+      return CMD_EXEC_QUIT;  // ready to quit
+  }
 
-   cout << "Are you sure to quit (Yes/No)? [No] ";
-   char str[1024];
-   cin.getline(str, 1024);
-   string ss = string(str);
-   size_t s = ss.find_first_not_of(' ', 0);
-   if (s != string::npos) {
-      ss = ss.substr(s);
-      if (myStrNCmp("Yes", ss, 1) == 0)
-         return CMD_EXEC_QUIT;  // ready to quit
-   }
-   return CMD_EXEC_DONE;     // not yet to quit
+  cout << "Are you sure to quit (Yes/No)? [No] ";
+  char str[1024];
+  cin.getline(str, 1024);
+  string ss = string(str);
+  size_t s = ss.find_first_not_of(' ', 0);
+  if (s != string::npos) {
+    ss = ss.substr(s);
+    if (myStrNCmp("Yes", ss, 1) == 0)
+      return CMD_EXEC_QUIT;  // ready to quit
+  }
+  return CMD_EXEC_DONE;     // not yet to quit
 }
 
 void
 QuitCmd::usage(ostream& os) const
 {
-   os << "Usage: Quit [-Force]" << endl;
+  os << "Usage: Quit [-Force]" << endl;
 }
 
 void
 QuitCmd::help() const
 {
-   cout << setw(15) << left << "Quit: "
-        << "quit the execution" << endl;
+  cout << setw(15) << left << "Quit: "
+    << "quit the execution" << endl;
 }
 
 //----------------------------------------------------------------------
 //    HIStory [(int nPrint)]
 //----------------------------------------------------------------------
-CmdExecStatus
+  CmdExecStatus
 HistoryCmd::exec(const string& option)
 {
-   // check option
-   string token;
-   if (!CmdExec::lexSingleOption(option, token))
-      return CMD_EXEC_ERROR;
-   int nPrint = -1;
-   if (token.size()) {
-      if (!myStr2Int(token, nPrint))
-         return CmdExec::errorOption(CMD_OPT_ILLEGAL, token);
-   }
+  // check option
+  string token;
+  if (!CmdExec::lexSingleOption(option, token))
+    return CMD_EXEC_ERROR;
+  int nPrint = -1;
+  if (token.size()) {
+    if (!myStr2Int(token, nPrint))
+      return CmdExec::errorOption(CMD_OPT_ILLEGAL, token);
+  }
 
-   cmdMgr->printHistory(nPrint);
+  cmdMgr->printHistory(nPrint);
 
-   return CMD_EXEC_DONE;
+  return CMD_EXEC_DONE;
 }
 
 void
 HistoryCmd::usage(ostream& os) const
 {
-   os << "Usage: HIStory [(int nPrint)]" << endl;
+  os << "Usage: HIStory [(int nPrint)]" << endl;
 }
 
 void
 HistoryCmd::help() const
 {
-   cout << setw(15) << left << "HIStory: "
-        << "print command history" << endl;
+  cout << setw(15) << left << "HIStory: "
+    << "print command history" << endl;
 }
 
 
@@ -158,27 +158,27 @@ HistoryCmd::help() const
 //     where xx may or may not exist...  (recursive dofiles)
 //     (Let the max recursion depth = 1024)
 //
-CmdExecStatus
+  CmdExecStatus
 DofileCmd::exec(const string& option)
 {     
-   // check option 
-   string token;
-   if (!CmdExec::lexSingleOption(option, token, false))
-      return CMD_EXEC_ERROR;
-   if (!cmdMgr->openDofile(token))
-      return CmdExec::errorOption(CMD_OPT_FOPEN_FAIL, token);
-   return CMD_EXEC_DONE;
+  // check option 
+  string token;
+  if (!CmdExec::lexSingleOption(option, token, false))
+    return CMD_EXEC_ERROR;
+  if (!cmdMgr->openDofile(token))
+    return CmdExec::errorOption(CMD_OPT_FOPEN_FAIL, token);
+  return CMD_EXEC_DONE;
 }
 
 void
 DofileCmd::usage(ostream& os) const
 {  
-   os << "Usage: DOfile <(string file)>" << endl;
+  os << "Usage: DOfile <(string file)>" << endl;
 }  
-      
+
 void
 DofileCmd::help() const
 {
-   cout << setw(15) << left << "DOfile: "
-        << "execute the commands in the dofile" << endl;
+  cout << setw(15) << left << "DOfile: "
+    << "execute the commands in the dofile" << endl;
 }

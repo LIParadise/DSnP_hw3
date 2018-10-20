@@ -24,14 +24,15 @@ using namespace std;
 /*****************************************/
 /*          Global Functions             */
 /*****************************************/
-ostream&
+  ostream&
 operator << (ostream& os, const DBJsonElem& j)
 {
   os << "\"" << j.key() << "\" : " << j.value();
   return os;
 }
 
-istream& operator >> (istream& is, DBJson& j)
+  istream&
+operator >> (istream& is, DBJson& j)
 {
   // TODO: to read in data from Json file and store them in a DB ...done
   // - You can assume the input file is with correct JSON file format

@@ -16,7 +16,7 @@
 // Global variable
 DBJson dbjson;
 
-bool
+  bool
 initDbCmd()
 {
   // TODO... done
@@ -40,7 +40,7 @@ initDbCmd()
 //----------------------------------------------------------------------
 //    DBAPpend <(string key)><(int value)>
 //----------------------------------------------------------------------
-CmdExecStatus
+  CmdExecStatus
 DBAppendCmd::exec(const string& option)
 {
   // TODO... done 10/19 03:06
@@ -158,7 +158,7 @@ DBCountCmd::help() const
 //----------------------------------------------------------------------
 //    DBMAx
 //----------------------------------------------------------------------
-CmdExecStatus
+  CmdExecStatus
 DBMaxCmd::exec(const string& option)
 {  
   // check option
@@ -228,7 +228,7 @@ DBMinCmd::help() const
 //----------------------------------------------------------------------
 //    DBPrint [(string key)]
 //----------------------------------------------------------------------
-CmdExecStatus
+  CmdExecStatus
 DBPrintCmd::exec(const string& option)
 {  
   // TODO... shall be done; 10/19 05:45
@@ -276,7 +276,7 @@ DBPrintCmd::help() const
 //----------------------------------------------------------------------
 //    DBRead <(string jsonFile)> [-Replace]
 //----------------------------------------------------------------------
-CmdExecStatus
+  CmdExecStatus
 DBReadCmd::exec(const string& option)
 {
   // check option
