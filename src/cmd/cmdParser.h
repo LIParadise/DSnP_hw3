@@ -184,7 +184,7 @@ class CmdParser
   // helper user-defined functions;
   bool cmp_str_ign_case( const string&, const string&, const size_t ) const;
   string myFindPrefix( const vector<string>& ) const;
-  size_t myStrPrefCmp( const string&, const string&, const size_t );
+  size_t myStrPrefCmp( const string&, const string&, const size_t ) const;
 };
 
 

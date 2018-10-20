@@ -336,7 +336,7 @@ CmdParser::parseCmd(string& option)
   void
 CmdParser::listCmd(const string& str)
 {
-  // TODO...
+  // TODO... done 10/21 0608
   // we'll do this function based on cmdMgr->_tabPressCount
   // along with # of tokens in current command line.
 
@@ -345,8 +345,10 @@ CmdParser::listCmd(const string& str)
 
   // case I. there's no token.
   if( myStrGetTok( str, temp ) == string::npos && temp == "" ){
+    cout << endl;
     printHelps();
     _tabPressCount = 1;
+    reprintCmd();
     return;
   }
   // End of case I.
@@ -360,7 +362,7 @@ CmdParser::listCmd(const string& str)
     for( auto it = _cmdMap.begin(); it != _cmdMap.end(); ++it ){
       standard = "";
       standard = it->first + it->second->getOptCmd();
-      if( cmp_str_ign_case( standard, temp, temp.size() ) ){
+      if( cmp_str_ign_case( standard, temp, it->first.size() ) ){
         // match cmd;
         temp_cmd_pairs.push_back( (*it) );
       }
@@ -371,6 +373,7 @@ CmdParser::listCmd(const string& str)
       // beep and do nothing.
       mybeep();
       _tabPressCount = 1;
+      return;
     }else if( temp_cmd_pairs.size() == 1 ){
       // token is good, and only one match.
       standard = "";
@@ -382,6 +385,7 @@ CmdParser::listCmd(const string& str)
       }
       insertChar( ' ' );
       _tabPressCount = 0;
+      return;
     }else{
       // temp_cmd_pairs.size() > 1;
       ios_base::fmtflags origFlags = cout.flags();
@@ -415,7 +419,7 @@ CmdParser::listCmd(const string& str)
     for( auto it = _cmdMap.begin(); it != _cmdMap.end(); ++it ){
       standard = "";
       standard = it->first + it->second->getOptCmd();
-      if( cmp_str_ign_case( standard, temp, temp.size() ) ){
+      if( cmp_str_ign_case( standard, temp, it->first.size() ) ){
         // match cmd;
         temp_cmd_pairs.push_back( (*it) );
       }
@@ -429,18 +433,20 @@ CmdParser::listCmd(const string& str)
     }else if( temp_cmd_pairs.size() == 1 ){
       // there's only one command like this;
       if( _tabPressCount == 1 || _tabPressCount == 0){
-        temp_cmd_pairs[0].second->help();
+        cout << endl;
+        temp_cmd_pairs[0].second->usage(cout);
         _tabPressCount = 2;
+        reprintCmd();
         return;
       }else{
         // _tabPressCount > 1;
         if( neighbor_tok == "" ){
           // command line like "cmd> user_input $" and pressed tab again,
           // where '$' means cursor.
-          // there shall be help message of this command printed before.
+          // there shall be usage message of this command printed before.
           // try ls or show common prefix.
           filenames.clear();
-          listDir( filenames, "" );
+          listDir( filenames, "", "." );
           if( filenames.empty() ){
             mybeep();
             _tabPressCount = 2;
@@ -448,21 +454,20 @@ CmdParser::listCmd(const string& str)
           }else if( filenames.size() > 1 ){
             _prefix = myFindPrefix( filenames );
             if( !_prefix.empty() ){
-              _prefix += ' ';
               for( auto& it : _prefix ){
-                insertChar( _prefix[i] );
+                insertChar( it );
               }
               mybeep();
               _tabPressCount = 2;
               return;
-            }else if{
+            }else{
               // no prefix, ls.
               ios_base::fmtflags origFlags = cout.flags();
               for( size_t i = 0; i < filenames.size(); ++i ){
                 if( i%5 == 0 ){
                   cout << endl;
                 }
-                cout << setw(12) << left << filenames[i];
+                cout << setw(16) << left << filenames[i];
               }
               cout.flags(origFlags);
               _tabPressCount = 2;
@@ -479,7 +484,7 @@ CmdParser::listCmd(const string& str)
           // end of case "neighbor_tok.empty()";
         }else if( neighbor_tok != "" ){
           filenames.clear();
-          listDir( filenames, neighbor_tok );
+          listDir( filenames, neighbor_tok, "." );
           if( filenames.empty() ){
             mybeep();
             _tabPressCount = 2;
@@ -487,8 +492,7 @@ CmdParser::listCmd(const string& str)
           }else if( filenames.size() > 1 ){
             _prefix = myFindPrefix( filenames );
             if( !_prefix.empty() ){
-              if( _prefix.size() > neighbor_tok.size() {
-                _prefix += ' ';
+              if( _prefix.size() > neighbor_tok.size() ){
                 for( size_t i = neighbor_tok.size(); i < _prefix.size(); ++i ){
                   insertChar( _prefix[i] );
                 }
@@ -502,7 +506,7 @@ CmdParser::listCmd(const string& str)
                   if( i%5 == 0 ){
                     cout << endl;
                   }
-                  cout << setw(12) << left << filenames[i];
+                  cout << setw(16) << left << filenames[i];
                 }
                 cout.flags(origFlags);
                 _tabPressCount = 2;
@@ -667,8 +671,9 @@ CmdExec::errorOption(CmdOptionError err, const string& opt) const
 bool
 CmdParser::cmp_str_ign_case( const string& standard, const string& user_input,
     const size_t size ) const {
-  assert( size <= user_input.size() &&
-      size <= standard.size() );
+  if( user_input.size() < size ){
+    return false;
+  }
   char ch1, ch2;
   for( size_t i = 0; i < size; i ++ ){
     ch1 = standard[i];
@@ -683,7 +688,7 @@ CmdParser::cmp_str_ign_case( const string& standard, const string& user_input,
 }
 
 string
-myFindPrefix( const vector<string>& ls ) const{
+CmdParser::myFindPrefix( const vector<string>& ls ) const{
   if( ls.size() == 1 ){
     return ls[0];
   }else if( ls.empty() ){
@@ -745,7 +750,7 @@ myFindPrefix( const vector<string>& ls ) const{
 // compare two string case-SENSITIVELY and return the first position of which
 // they don't agree with the other.
 size_t
-myStrPrefCmp( const string& standard, const string& prf, 
+CmdParser::myStrPrefCmp( const string& standard, const string& prf, 
     const size_t pos = 0) const{
   if( standard.size() < pos ){
     assert( 0 && "inproper use of myStrPrefCmp" );
