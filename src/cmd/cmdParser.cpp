@@ -428,12 +428,10 @@ CmdParser::listCmd(const string& str)
       return;
     }else if( temp_cmd_pairs.size() == 1 ){
       // there's only one command like this;
-      if( _tabPressCount == 1 ){
+      if( _tabPressCount == 1 || _tabPressCount == 0){
         temp_cmd_pairs[0].second->help();
         _tabPressCount = 2;
         return;
-      }else if( _tabPressCount == 0 ){
-        assert(0 && "_tabPressCount exception in listCmd, with #token >= 1" );
       }else{
         // _tabPressCount > 1;
         if( neighbor_tok == "" ){
@@ -441,19 +439,101 @@ CmdParser::listCmd(const string& str)
           // where '$' means cursor.
           // there shall be help message of this command printed before.
           // try ls or show common prefix.
+          filenames.clear();
           listDir( filenames, "" );
-          longest_prefix( filenames, _prefix );
           if( filenames.empty() ){
             mybeep();
             _tabPressCount = 2;
             return;
-          }else{
-            longest_prefix( filenames, _prefix );
+          }else if( filenames.size() > 1 ){
+            _prefix = myFindPrefix( filenames );
+            if( !_prefix.empty() ){
+              _prefix += ' ';
+              for( auto& it : _prefix ){
+                insertChar( _prefix[i] );
+              }
+              mybeep();
+              _tabPressCount = 2;
+              return;
+            }else if{
+              // no prefix, ls.
+              ios_base::fmtflags origFlags = cout.flags();
+              for( size_t i = 0; i < filenames.size(); ++i ){
+                if( i%5 == 0 ){
+                  cout << endl;
+                }
+                cout << setw(12) << left << filenames[i];
+              }
+              cout.flags(origFlags);
+              _tabPressCount = 2;
+              reprintCmd();
+              return;
+            }
 
-        }
-      }
+          }else if( filenames.size () == 1 ){
+            for( auto& it : filenames[0] ){
+              insertChar( it );
+            }
+            insertChar ( ' ' );
+          } // end of if ( filenames.empty() ) elif {} elif {};
+          // end of case "neighbor_tok.empty()";
+        }else if( neighbor_tok != "" ){
+          filenames.clear();
+          listDir( filenames, neighbor_tok );
+          if( filenames.empty() ){
+            mybeep();
+            _tabPressCount = 2;
+            return;
+          }else if( filenames.size() > 1 ){
+            _prefix = myFindPrefix( filenames );
+            if( !_prefix.empty() ){
+              if( _prefix.size() > neighbor_tok.size() {
+                _prefix += ' ';
+                for( size_t i = neighbor_tok.size(); i < _prefix.size(); ++i ){
+                  insertChar( _prefix[i] );
+                }
+                mybeep();
+                _tabPressCount = 2;
+                return;
+              }else{
+                assert( _prefix.size() == neighbor_tok.size() );
+                ios_base::fmtflags origFlags = cout.flags();
+                for( size_t i = 0; i < filenames.size(); ++i ){
+                  if( i%5 == 0 ){
+                    cout << endl;
+                  }
+                  cout << setw(12) << left << filenames[i];
+                }
+                cout.flags(origFlags);
+                _tabPressCount = 2;
+                reprintCmd();
+                return;
+              }
+            }else{
+              // no prefix, mybeep() and do nothing.
+              // but this shall not happen, given that we
+              // used 'neighbor_tok' as prefix for 
+              // listDir(vector<string>&, const string&, const string& = ".")
+              throw ( "un-explain-able error: \"" + neighbor_tok + "\"" + 
+                  "inside listCmd()" );
+              return;
+            }
+          }else if( filenames.size () == 1 ){
+            for( size_t i = neighbor_tok.size(); i < filenames[0].size(); ++i){
+              insertChar( filenames[0][i] );
+            }
+            insertChar ( ' ' );
+            _tabPressCount = 2;
+            return;
+          } // end of if ( filenames.empty() ) elif {} elif {};
+        }// end of checking neighbor_tok;
+      }// end of temp_cmd_pairs.size() == 1, _tabPressCount > 1;
+    }else{
+      // temp_cmd_pairs.size() > 1;
+      mybeep();
+      _tabPressCount = 2;
     }
-  }
+  }// end of case III., with _tabPressCount > 1;
     
 
 }
@@ -602,18 +682,84 @@ CmdParser::cmp_str_ign_case( const string& standard, const string& user_input,
   return true;
 }
 
-void longest_prefix( const vector<string>& filenames, string& _prefix ){
-  _prefix = "";
-  assert( ! filenames.empty() );
-  string temp = "";
-  string former = "";
-  string latter = "";
+string
+myFindPrefix( const vector<string>& ls ) const{
+  if( ls.size() == 1 ){
+    return ls[0];
+  }else if( ls.empty() ){
+    return "";
+  }
+  // we only need to find prefix for ls have size > 1;
+
   size_t len = numeric_limits<size_t>::max();
-  size_t offset = 0;
-  for( size_t i = 0; i < filenames.size(); i++ ){
-    if( filenames[i].size() < len ){
-      len = filenames[i].size();
+  for( size_t i = 0; i < ls.size(); ++i ){
+    if( ls[i].size() < len ){
+      len = ls[i].size();
     }
   }
-  
 
+  size_t match_len = 0;
+  size_t temp = 0;
+  size_t offset = 0;
+  string former = ls[0].substr( 0, len/2 );
+  string latter = ls[0].substr( len/2, string::npos );
+  string _prefix = "";
+  bool ending = false;
+
+  while( true ){
+
+    if( former.size() == 0 ){
+      assert( latter.size() == 1 && 
+          "something went wrong in binary prefix searching final steps" );
+      ending = true;
+      former = latter;
+    }
+    match_len = former.size();
+    for( size_t i = 1; i < ls.size(); i++ ){
+      temp = myStrPrefCmp( ls[i], former, offset );
+      if( temp < match_len ){
+        match_len = temp;
+      }
+    }
+    if( match_len != former.size() ){
+      former.resize( match_len );
+      return ( _prefix + former );
+    }else if( former.size() == 1 ){
+      assert( ending == true &&
+          "something went wrong in binary prefix searching final steps" );
+      return ( _prefix + former );
+    }else{
+      // whole former match all that in vector<string> ls;
+      // parse latter.
+      assert( ending == false &&
+          "something went wrong in binary prefix searching" );
+      _prefix = _prefix + former;
+      offset = len/2;
+      former = latter.substr( 0, latter.size()/2 );
+      latter = latter.substr( latter.size()/2, string::npos );
+    }
+  }
+}
+
+
+// compare two string case-SENSITIVELY and return the first position of which
+// they don't agree with the other.
+size_t
+myStrPrefCmp( const string& standard, const string& prf, 
+    const size_t pos = 0) const{
+  if( standard.size() < pos ){
+    assert( 0 && "inproper use of myStrPrefCmp" );
+  }
+  size_t size = ( (standard.size()-pos) < prf.size() )?
+    standard.size()-pos: prf.size();
+  for( size_t i = 0; i < size-pos; i++ ){
+    if( standard[i+pos] != prf[i] ){
+      return i;
+    }
+  }
+  if( pos + prf.size() > standard.size() ){
+    return standard.size() - pos;
+  }else{
+    return prf.size();
+  }
+}
