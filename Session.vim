@@ -34,7 +34,7 @@ if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
   let s:wipebuf = bufnr('%')
 endif
 set shortmess=aoO
-badd +1 src/cmd/cmdParser.cpp
+badd +350 src/cmd/cmdParser.cpp
 badd +181 src/cmd/cmdParser.h
 badd +1 src/cmd/cmdCharDef.cpp
 badd +1 src/cmd/cmdCharDef.h
@@ -190,12 +190,12 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 515 - ((42 * winheight(0) + 22) / 45)
+let s:l = 428 - ((18 * winheight(0) + 22) / 45)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-515
-normal! 015|
+428
+normal! 052|
 wincmd w
 argglobal
 edit src/cmd/cmdParser.h
@@ -318,7 +318,7 @@ normal! zt
 normal! 022|
 wincmd w
 argglobal
-edit src/cmd/cmdParser.cpp
+edit src/util/myString.cpp
 setlocal keymap=
 setlocal noarabic
 setlocal autoindent
@@ -430,12 +430,12 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 678 - ((9 * winheight(0) + 11) / 22)
+let s:l = 41 - ((0 * winheight(0) + 11) / 22)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-678
-normal! 03|
+41
+normal! 0
 wincmd w
 exe 'vert 1resize ' . ((&columns * 86 + 86) / 173)
 exe '2resize ' . ((&lines * 22 + 24) / 48)
@@ -1325,11 +1325,11 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 3 - ((2 * winheight(0) + 22) / 45)
+let s:l = 5 - ((4 * winheight(0) + 22) / 45)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-3
+5
 normal! 0
 wincmd w
 argglobal
@@ -1445,11 +1445,11 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 327 - ((22 * winheight(0) + 22) / 45)
+let s:l = 320 - ((41 * winheight(0) + 22) / 45)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-327
+320
 normal! 0
 wincmd w
 exe 'vert 1resize ' . ((&columns * 86 + 86) / 173)

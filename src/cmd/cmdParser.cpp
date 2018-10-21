@@ -347,8 +347,9 @@ CmdParser::listCmd(const string& str)
   // we'll do this function based on cmdMgr->_tabPressCount
   // along with # of tokens in current command line.
 
-  string temp = "";
+  string temp  = "";
   size_t index = 0;
+  size_t tmp   = 0;
 
   // case I. there's no token.
   if( myStrGetTok( str, temp ) == string::npos && temp == "" ){
@@ -420,7 +421,11 @@ CmdParser::listCmd(const string& str)
     string neighbor_tok = "";
     string standard = "";
     string _prefix = "";
-    index = myStrGetTok( str, neighbor_tok, index );
+    // make neighbor_tok the last token right before cursor.
+    tmp = str.size()-1;
+    for( ; str[tmp] != ' ' && tmp != 0; tmp -- ){}
+    neighbor_tok = str.substr( tmp+1, string::npos );
+    // neighbor_tok is the last token before cursor.
     vector<string> filenames;
     
     for( auto it = _cmdMap.begin(); it != _cmdMap.end(); ++it ){
