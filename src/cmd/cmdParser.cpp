@@ -33,22 +33,29 @@ CmdParser::openDofile(const string& dof)
   // TODO... done 10/18 23:01
 
   if( _dofileStack.size() < MAX_FILE_DEPTH ){
+    // try open file.
     if( _dofile != nullptr ){
       _dofileStack.push( _dofile );
     }
     _dofile = new ifstream(dof.c_str());
-    if( _dofile->good() ){
-      return true;
-    }else{
-      if( !_dofileStack.empty() ){
-        _dofile = _dofileStack.top();
-        _dofileStack.pop();
-      }else{
-        _dofile = nullptr;
+    if( _dofile->is_open() ){
+      if( _dofile->good() ){
+        return true;
       }
     }
+    // file openning failure...
+    _dofile->close();
+    delete _dofile;
+    if( !_dofileStack.empty() ){
+      _dofile = _dofileStack.top();
+      _dofileStack.pop();
+    }else{
+      _dofile = nullptr;
+    }
+    return false;
   }else{
     // _dofileStack.size() >= MAX_FILE_DEPTH;
+    cerr << "well how am i supposed to close this shit?" << endl;
     return false;
   }
 }

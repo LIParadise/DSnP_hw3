@@ -107,7 +107,7 @@ class CmdParser
 #define READ_BUF_SIZE    65536
 #define PG_OFFSET        10
 
-#define MAX_FILE_DEPTH   1024
+#define MAX_FILE_DEPTH  1024 
 
   typedef map<const string, CmdExec*>   CmdMap;
   typedef pair<const string, CmdExec*>  CmdRegPair;
