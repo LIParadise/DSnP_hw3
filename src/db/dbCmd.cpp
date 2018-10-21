@@ -45,6 +45,12 @@ DBAppendCmd::exec(const string& option)
 {
   // TODO... done 10/19 03:06
   // check option
+
+  if( !dbjson ){
+    cerr << "Error: DB is not created yet!!" << endl;
+    return CMD_EXEC_ERROR;
+  }
+
   vector<string> options;
   options.clear();
   int value = 0;
@@ -232,6 +238,11 @@ DBMinCmd::help() const
 DBPrintCmd::exec(const string& option)
 {  
   // TODO... shall be done; 10/19 05:45
+
+  if( !dbjson ){
+    cerr << "Error: DB is not created yet!!" << endl;
+    return CMD_EXEC_DONE;
+  }
 
   string my_key = "";
   size_t key_idx = 0;

@@ -34,7 +34,7 @@ if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
   let s:wipebuf = bufnr('%')
 endif
 set shortmess=aoO
-badd +350 src/cmd/cmdParser.cpp
+badd +1 src/cmd/cmdParser.cpp
 badd +181 src/cmd/cmdParser.h
 badd +1 src/cmd/cmdCharDef.cpp
 badd +1 src/cmd/cmdCharDef.h
@@ -190,12 +190,12 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 428 - ((18 * winheight(0) + 22) / 45)
+let s:l = 425 - ((15 * winheight(0) + 22) / 45)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-428
-normal! 052|
+425
+normal! 023|
 wincmd w
 argglobal
 edit src/cmd/cmdParser.h
@@ -1072,12 +1072,12 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 1 - ((0 * winheight(0) + 22) / 45)
+let s:l = 48 - ((0 * winheight(0) + 22) / 45)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-1
-normal! 0
+48
+normal! 015|
 wincmd w
 argglobal
 edit ./src/db/dbJson.cpp
@@ -1192,12 +1192,12 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 51 - ((44 * winheight(0) + 22) / 45)
+let s:l = 41 - ((22 * winheight(0) + 22) / 45)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-51
-normal! 03|
+41
+normal! 06|
 wincmd w
 exe 'vert 1resize ' . ((&columns * 86 + 86) / 173)
 exe 'vert 2resize ' . ((&columns * 86 + 86) / 173)
@@ -1325,11 +1325,11 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 5 - ((4 * winheight(0) + 22) / 45)
+let s:l = 7 - ((6 * winheight(0) + 22) / 45)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-5
+7
 normal! 0
 wincmd w
 argglobal
@@ -1445,13 +1445,14 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 320 - ((41 * winheight(0) + 22) / 45)
+let s:l = 245 - ((16 * winheight(0) + 22) / 45)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-320
-normal! 0
+245
+normal! 03|
 wincmd w
+2wincmd w
 exe 'vert 1resize ' . ((&columns * 86 + 86) / 173)
 exe 'vert 2resize ' . ((&columns * 86 + 86) / 173)
 tabedit src/cmd/cmdCommon.h
@@ -1831,7 +1832,7 @@ exe s:l
 normal! zt
 1
 normal! 0
-tabnext 1
+tabnext 5
 set stal=1
 if exists('s:wipebuf')
   silent exe 'bwipe ' . s:wipebuf
