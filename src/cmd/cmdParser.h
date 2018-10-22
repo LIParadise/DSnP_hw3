@@ -115,7 +115,8 @@ class CmdParser
   public:
   CmdParser(const string& p) : _prompt(p), _dofile(0),
   _readBufPtr(_readBuf), _readBufEnd(_readBuf),
-  _historyIdx(0), _tabPressCount(0), _tempCmdStored(false) {}
+  _historyIdx(0), _tabPressCount(0), _myTabPressCount(0),
+  _tempCmdStored(false) {}
   virtual ~CmdParser() {}
 
   bool openDofile(const string& dof);
@@ -171,6 +172,7 @@ class CmdParser
   // (2) When up/down/pgUp/pgDn is pressed,
   //     position to history to retrieve
   size_t    _tabPressCount;         // The number of tab pressed
+  size_t    _myTabPressCount;       // _tabPressCount isn't easy to understand;
   bool      _tempCmdStored;         // When up/pgUp is pressed, current line
   // will be stored in _history and
   // _tempCmdStored will be true.
