@@ -456,7 +456,7 @@ CmdParser::listCmd(const string& str)
         return;
       }else{
         // _myTabPressCount >= 1;
-        assert( ( _myTabPressCount == 1 || _myTabPressCount == 0 ) &&
+        assert( _myTabPressCount == 1  &&
             "_myTabPressCount error in case III" );
         if( neighbor_tok == "" ){
           // command line like "cmd> user_input $" and pressed tab again,
@@ -498,6 +498,7 @@ CmdParser::listCmd(const string& str)
               insertChar( it );
             }
             insertChar ( ' ' );
+            _myTabPressCount = 1;
           } // end of if ( filenames.empty() ) elif {} elif {};
           // end of case "neighbor_tok.empty()";
         }else if( neighbor_tok != "" ){

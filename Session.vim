@@ -190,12 +190,12 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 410 - ((31 * winheight(0) + 22) / 45)
+let s:l = 504 - ((26 * winheight(0) + 22) / 45)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-410
-normal! 019|
+504
+normal! 09|
 wincmd w
 argglobal
 edit src/cmd/cmdParser.h
@@ -310,12 +310,12 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 119 - ((19 * winheight(0) + 11) / 22)
+let s:l = 181 - ((21 * winheight(0) + 11) / 22)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-119
-normal! 02|
+181
+normal! 03|
 wincmd w
 argglobal
 edit src/cmd/cmdParser.cpp
@@ -430,11 +430,11 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 691 - ((3 * winheight(0) + 11) / 22)
+let s:l = 354 - ((4 * winheight(0) + 11) / 22)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-691
+354
 normal! 03|
 wincmd w
 exe 'vert 1resize ' . ((&columns * 86 + 86) / 173)
@@ -566,11 +566,11 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 17 - ((16 * winheight(0) + 22) / 45)
+let s:l = 19 - ((18 * winheight(0) + 22) / 45)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-17
+19
 normal! 0
 wincmd w
 argglobal
